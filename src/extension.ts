@@ -1,11 +1,12 @@
 // The module 'vscode' contains the VS Code extensibility API
 
-import { commands, ExtensionContext, TextEditor, window } from 'vscode';
+import { commands, ExtensionContext, TextEditor, window, workspace } from 'vscode';
 
 // Import the module and reference it with the alias vscode in your code below
 const COLLAPSE = 'workbench.files.action.collapseExplorerFolders';
 const REVEAL = 'revealInExplorer';
 const FOCUS_EDITOR = 'workbench.action.focusActiveEditorGroup';
+
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -19,9 +20,12 @@ async function showOnlyCurrentFile(textEditor: TextEditor | undefined) {
   if (!fileExpectedInExplorer) {
     return;
   }
-  await commands.executeCommand(COLLAPSE);
-  await commands.executeCommand(REVEAL);
-  await commands.executeCommand(FOCUS_EDITOR);
+  const configs = workspace.getConfiguration('auto-collapse-explorer-with-toggle');
+  if(configs.get("active") === true){
+    await commands.executeCommand(COLLAPSE);
+    await commands.executeCommand(REVEAL);
+    await commands.executeCommand(FOCUS_EDITOR);
+  }
 }
 
 // this method is called when your extension is deactivated
